@@ -1,0 +1,109 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Personalize
+{% endblock %}
+
+{% block main %}
+<div class="container mt-5">
+    <h2 class="mb-4 text-center">Help Us Personalize Your Experience</h2>
+    <form action="{{ url_for('save_profile') }}" method="POST">
+        <!-- Personal Info -->
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="age" class="form-label">Age</label>
+                <input type="number" class="form-control" name="age" required>
+            </div>
+            <div class="col-md-6">
+                <label for="gender" class="form-label">Gender</label>
+                <select class="form-select" name="gender" required>
+                    <option value="" disabled selected>Select</option>
+                    <option>Male</option>
+                    <option>Female</option>
+                    <option>Other</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="height" class="form-label">Height (cm)</label>
+                <input type="number" class="form-control" name="height" required>
+            </div>
+            <div class="col-md-6">
+                <label for="weight" class="form-label">Weight (kg)</label>
+                <input type="number" class="form-control" name="weight" required>
+            </div>
+        </div>
+
+        <!-- Medical History -->
+        <div class="mb-3">
+            <label for="conditions" class="form-label">Existing Medical Conditions</label>
+            <input type="text" class="form-control" name="conditions" placeholder="e.g., Diabetes, Asthma">
+        </div>
+
+        <div class="mb-3">
+            <label for="medications" class="form-label">Current Medications</label>
+            <input type="text" class="form-control" name="medications">
+        </div>
+
+        <div class="mb-3">
+            <label for="allergies" class="form-label">Allergies</label>
+            <input type="text" class="form-control" name="allergies">
+        </div>
+
+        <div class="mb-3">
+            <label for="surgeries" class="form-label">Major Surgeries or Hospitalizations</label>
+            <input type="text" class="form-control" name="surgeries">
+        </div>
+
+        <!-- Lifestyle -->
+        <div class="mb-3">
+            <label for="diet" class="form-label">Diet Description</label>
+            <input type="text" class="form-control" name="diet" placeholder="e.g., Vegan, Balanced, High Sugar">
+        </div>
+
+        <div class="mb-3">
+            <label for="exercise" class="form-label">Exercise Frequency</label>
+            <select class="form-select" name="exercise">
+                <option value="" disabled selected>Select</option>
+                <option>Daily</option>
+                <option>Occasionally</option>
+                <option>Never</option>
+            </select>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="smoking" class="form-label">Do you smoke?</label>
+                <select class="form-select" name="smoking">
+                    <option value="" disabled selected>Select</option>
+                    <option>Yes</option>
+                    <option>No</option>
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label for="alcohol" class="form-label">Do you consume alcohol?</label>
+                <select class="form-select" name="alcohol">
+                    <option value="" disabled selected>Select</option>
+                    <option>Yes</option>
+                    <option>No</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="sleep_hours" class="form-label">Average Sleep (hours)</label>
+            <input type="number" class="form-control" name="sleep_hours" min="0" max="24">
+        </div>
+
+        <!-- Family History -->
+        <div class="mb-3">
+            <label for="family_history" class="form-label">Family Medical History</label>
+            <input type="text" class="form-control" name="family_history" placeholder="e.g., Diabetes, Cancer, Heart Disease">
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100">Submit</button>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends "layout.html" %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/chat.css') }}">
+{% endblock %}
+
+{% block title %}Chatbot{% endblock %}
+
+{% block main %}
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="container mt-3">
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+<div class="chat-container">
+    <form action="{{ url_for('chatbot') }}" method="POST" autocomplete = "off">
+        <input class="entry" type="text" name="user_input" placeholder="Ask your medical queries here..." autofocus required>
+        <button type="submit">Ask</button>
+    </form>
+
+    <div class="response-box">
+        {% if response %}
+            {{ response }}
+        {% else %}
+            Ask a question and get instant medical advice!
+        {% endif %}
+    </div>
+    {%if response and sources%}
+        <button class="toggle_button">Sources</button>
+        <div class = "sources">
+            <ul>
+                {%for source in sources%}
+                    <li>{{source}} </li>
+                {%endfor%}
+            </ul>
+        </div>
+    {%endif%}
+</div>
+<script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+
+{% endblock %}

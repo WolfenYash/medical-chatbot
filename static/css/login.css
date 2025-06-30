@@ -1,0 +1,18 @@
+.toggle-button-div{
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: 20px;
+    margin-right: 20px;
+    padding: 30px;
+}
+.flash-message {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 10px 20px;
+    border-radius: 5px;
+    z-index: 1000;
+}

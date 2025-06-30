@@ -1,0 +1,78 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Home
+{% endblock %}
+
+{% block main %}
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="container mt-3">
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+<div class="container text-center mt-5">
+
+    <h1 class="display-5 fw-bold mb-4">Welcome to Your Personal Healthcare Assistant</h1>
+
+    <p class="lead mb-4">
+        Our AI-powered chatbot helps answer your basic medical questions and gives general healthcare advice —
+        instantly, safely, and privately.
+    </p>
+
+    <div class="d-grid gap-3 d-sm-flex justify-content-sm-center mb-4">
+        <a href="{{ url_for('save_profile') }}" class="btn btn-outline-primary btn-lg px-4">Get Started</a>
+        <a href="{{ url_for('chatbot') }}" class="btn btn-primary btn-lg px-4">Talk to the AI Bot</a>
+    </div>
+
+    <div class="mt-5 mb-5">
+        <img src="{{ url_for('static', filename='images/ai-banner.png') }}" class="img-fluid" alt="Healthcare Chatbot" style="max-height: 350px;">
+    </div>
+
+    <!-- Carousel Section -->
+    <div id="featureCarousel" class="carousel slide mb-5" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img src="{{ url_for('static', filename='images/medical-banner.jpg') }}"
+                     class="d-block w-100 rounded" alt="Instant Chatbot Help">
+                <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded">
+                    <h5>Ask Medical Questions Anytime</h5>
+                    <p>Get instant responses to basic health queries with AI-powered accuracy.</p>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="{{ url_for('static', filename='images/medical-banner.jpg') }}"
+                     class="d-block w-100 rounded" alt="Confidential and Private">
+                <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded">
+                    <h5>100% Private and Confidential</h5>
+                    <p>Your data is safe, and your health questions are handled discreetly.</p>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="{{ url_for('static', filename='images/medical-banner.jpg') }}"
+                     class="d-block w-100 rounded" alt="Personalized Advice">
+                <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded">
+                    <h5>Personalized Healthcare Advice</h5>
+                    <p>Get better answers by sharing your age, lifestyle, and medical history.</p>
+                </div>
+            </div>
+        </div>
+
+        <button class="carousel-control-prev" type="button" data-bs-target="#featureCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#featureCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+
+</div>
+{% endblock %}
