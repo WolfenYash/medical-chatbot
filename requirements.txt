@@ -10,7 +10,7 @@ python-dotenv
 langchain-community
 pypdf
 chromadb
-
+langchain-openai
 
 
 langchain-community

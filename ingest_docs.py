@@ -50,7 +50,7 @@ print(f"\nTotal chunks to embed: {len(all_chunks)}")
 # 8. we embed every chunk inside our chroma db
 print(" Embedding and saving to chroma_db...")
 db = Chroma.from_documents(all_chunks,embedding,persist_directory="chroma_db") # this embeds it into the db
-db.persist() # if we wan to permanently store it into the local disk
+# db.persist() # if we wan to permanently store it into the local disk
 print("Done! Chroma DB created at './chroma_db'")
 
 
