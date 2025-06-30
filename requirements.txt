@@ -1,22 +1,19 @@
-#source venv/bin/activate
+
 langchain
 openai
 Flask
 Flask-Session
-
 requests
 dotenv
-lanchain-openai
+
 python-dotenv
 langchain-community
 pypdf
 chromadb
-pip install -U langchain-chroma
-sudo apt update
-sudo apt install lsof
+
+
 
 langchain-community
 pypdf
-chromadb
-all the others may also be needed it is just that these are special
-pip install -U langchain-chroma
+
+langchain-chroma

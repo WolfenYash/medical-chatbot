@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.py[cod]
+*.sqlite3
+*.db
+*.log
+
+# Virtual env
+venv/
+project_env/
+
+# LangChain or Chroma DB
+chroma_db/
+
+# VSCode
+.vscode/
+
+# Others
+.env
