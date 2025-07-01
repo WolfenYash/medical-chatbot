@@ -16,3 +16,10 @@
     border-radius: 5px;
     z-index: 1000;
 }
+body
+{
+    background-image:url("../images/backg-6.jpg");
+    background-size: cover;
+    background-position: center;
+    overflow: hidden;
+}
