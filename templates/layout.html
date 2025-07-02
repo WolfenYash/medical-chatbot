@@ -32,10 +32,13 @@
 
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('logout') }}">LOGOUT</a>
+                        <a class="nav-link" href="{{ url_for('history') }}">Chat-History</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href = "{{ url_for('save_profile') }}">Personalize Chatbot</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('logout') }}">LOGOUT</a>
                     </li>
                 </ul>
             </div>

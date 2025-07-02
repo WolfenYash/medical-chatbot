@@ -1,5 +1,6 @@
 import os
-from langchain_openai import OpenAI
+# from langchain_openai import OpenAI
+from langchain_openai import ChatOpenAI
 from dotenv import load_dotenv
 from langchain.prompts import PromptTemplate, FewShotPromptTemplate
 from langchain.chains import LLMChain, SequentialChain
@@ -128,7 +129,9 @@ def chatbot():
 
     if request.method == "POST":
         user_input = request.form.get("user_input")
-
+        if not user_input:
+            flash("Please enter a question.", "warning")
+            return render_template("chat.html", response=None)
         # classifier_prompt = PromptTemplate(
         # input_variables=["question"],
         # template="You are a strict medical classifier. Reply ONLY 'yes' or 'no'. Consider a question healthcare-related if it involves symptoms, diseases, treatments, or anything about the user's health profile, lifestyle, diet, sleep, or physical condition.\nQuestion: {question}"
@@ -173,7 +176,12 @@ def chatbot():
         llm = ChatOpenAI(temperature=0.3)
         response = llm.invoke(final_prompt)
         response = response.content
-
+        with engine.begin() as conn:
+            # Save the user input to the chat history
+            conn.execute(
+                text("INSERT INTO chat_history (username, user_message, bot_response) VALUES (:username, :message, :bot_response)"),
+                {"username": session["user"], "message": user_input, "bot_response": response}
+            )
         sources = []
         seen = set()
         for doc in docs:
@@ -245,7 +253,19 @@ def save_profile():
         return redirect(url_for("chatbot"))
 
     return render_template("personalize.html")
+@app.route("/history",methods=["GET", "POST"])
+def history():
+    if "user" not in session:
+        flash("You must be logged in to access this page", "danger")
+        return redirect(url_for("login"))
 
+    with engine.begin() as conn:
+        chats = conn.execute(
+            text("SELECT * FROM chat_history WHERE username = :username ORDER BY timestamp DESC"),
+            {"username": session["user"]}
+        ).fetchall()
+
+    return render_template("history.html", chats=chats)
 
 if __name__ == "__main__":
     app.run(debug=True)

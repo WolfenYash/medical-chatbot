@@ -1,37 +1,40 @@
 {% extends "layout.html" %}
 {% block title %}Chat History{% endblock %}
-
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/history.css') }}">
+{%endblock%}
 {% block main %}
 <div class="container mt-4">
-    <h2>Your Chat History</h2>
+    <h1>Chat History</h1>
+    <div class="list-group">
+        <table class="table table-bordered mb-4">
+            <thead>
+                <tr>
+                    <th scope="col">SNo.</th>
+                    <th scope="col">User Message</th>
+                    <th scope="col">Bot Response</th>
+                    <th scope="col">Timestamp</th>
+                </tr>
+            </thead>
+        {% if not chats %}
+            <tbody>
+                <tr>
+                    <td colspan="4" class="text-center">No chat history available.</td>
+                </tr>
+            </tbody>
+        {% endif %}
+        {% for chat in chats %}
+                <tbody>
+                    <tr>
+                        <td>{{loop.index}}</td>
+                        <td>{{ chat[2] }}</td>
+                        <td>{{ chat[3] }}</td>
+                        <td>{{ chat[4]}}</td>
+                    </tr>
+                </tbody>
+            {% endfor %}
+        </table>
+    </div>
 
-    {% if history %}
-        {% for row in history %}
-            <div class="chat-entry mb-3">
-                <button class="btn btn-outline-dark w-100 text-start toggle-question" type="button">
-                    {{ row.user_message }}
-                </button>
-
-                <div class="chat-details p-3 border rounded mt-2" style="display: none;">
-                    <p><strong>Bot:</strong> {{ row.bot_response }}</p>
-                    <p><small><strong>Time:</strong> {{ row.timestamp }}</small></p>
-
-                    <form method="POST">
-                        <input type="hidden" name="row_id" value="{{ row.id }}">
-                        <label for="feedback">Feedback:</label>
-                        <select name="feedback" class="form-select" style="width: auto; display: inline-block;">
-                            <option value="">-- Select --</option>
-                            <option value="good" {% if row.feedback == 'good' %}selected{% endif %}>👍 Good</option>
-                            <option value="bad" {% if row.feedback == 'bad' %}selected{% endif %}>👎 Bad</option>
-                        </select>
-                        <button type="submit" class="btn btn-sm btn-primary">Save</button>
-                    </form>
-                </div>
-            </div>
-        {% endfor %}
-    {% else %}
-        <p>No chat history available.</p>
-    {% endif %}
 </div>
-
 {% endblock %}

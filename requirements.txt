@@ -11,7 +11,7 @@ langchain-community
 pypdf
 chromadb
 langchain-openai
-
+langchain_openai
 
 langchain-community
 pypdf
