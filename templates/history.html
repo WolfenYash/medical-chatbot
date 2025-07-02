@@ -4,16 +4,17 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/history.css') }}">
 {%endblock%}
 {% block main %}
-<div class="container mt-4">
-    <h1>Chat History</h1>
+<div class="container mt-4 d-flex justify-content-center">
+    <h1 class="text-center">Chat History</h1>
     <div class="list-group">
-        <table class="table table-bordered mb-4">
+        <table class="table table-bordered table-hover mb-4 dist-10">
             <thead>
                 <tr>
-                    <th scope="col">SNo.</th>
-                    <th scope="col">User Message</th>
-                    <th scope="col">Bot Response</th>
-                    <th scope="col">Timestamp</th>
+                    <th scope="col" class="text-center">SNo.</th>
+                    <th scope="col" class="text-center">User Message</th>
+                    <th scope="col" class="text-center">Bot Response</th>
+                    <th scope="col" class="text-center">Timestamp</th>
+                    <th scope="col" class="text-center">Feedback</th>
                 </tr>
             </thead>
         {% if not chats %}
@@ -25,11 +26,52 @@
         {% endif %}
         {% for chat in chats %}
                 <tbody>
-                    <tr>
+                    <tr class="{% if chat[5] == 'bad' %}table-danger{% elif chat[5] == 'good' %}table-success{% endif %}">
                         <td>{{loop.index}}</td>
                         <td>{{ chat[2] }}</td>
                         <td>{{ chat[3] }}</td>
                         <td>{{ chat[4]}}</td>
+                        <!-- <td class="d-flex flex-column justify-content-center">    
+                            <form action="{{url_for('history')}}" method="post">
+                                <input type="hidden" name="chat_id" value="{{ chat[0] }}">
+                                <select name="feedback" class="form-select">
+                                    <option value="">Select Feedback</option>
+                                    <option value="good" {% if chat[5] == 'good' %}selected{% endif %}>Good</option>
+                                    <option value="bad" {% if chat[5] == 'bad' %}selected{% endif %}>Bad</option>
+                                </select>
+                                <button type="submit" class="btn btn-primary mt-2">Submit</button> 
+                            </form>
+                        </td> -->
+                        <td class="feedback-cell">
+                            {% if chat[5] %}
+                              <form method="POST" class="static-feedback-form">
+                                <input type="hidden" name="chat_id" value="{{ chat[0] }}">
+                                <input type="hidden" name="feedback" value="{{ chat[5] }}">
+                                <span class="text-muted">{{ chat[5] }}</span>
+                                <button type="button" class="btn btn-sm btn-warning change-btn">Change Feedback</button>
+                              </form>
+                          
+                              <form method="POST" class="edit-feedback-form d-none">
+                                <input type="hidden" name="chat_id" value="{{ chat[0] }}">
+                                <select name="feedback" class="form-select form-select-sm d-inline w-auto">
+                                  <option value="">Select Feedback</option>
+                                  <option value="Good" {% if chat[5] == 'Good' %}selected{% endif %}>Good</option>
+                                  <option value="Bad" {% if chat[5] == 'Bad' %}selected{% endif %}>Bad</option>
+                                </select>
+                                <button type="submit" class="btn btn-sm btn-primary">Save</button>
+                              </form>
+                            {% else %}
+                              <form method="POST">
+                                <input type="hidden" name="chat_id" value="{{ chat[0] }}">
+                                <select name="feedback" class="form-select form-select-sm d-inline w-auto">
+                                  <option value="">Select Feedback</option>
+                                  <option value="Good">Good</option>
+                                  <option value="Bad">Bad</option>
+                                </select>
+                                <button type="submit" class="btn btn-sm btn-primary">Submit</button>
+                              </form>
+                            {% endif %}
+                          </td>
                     </tr>
                 </tbody>
             {% endfor %}
@@ -37,4 +79,5 @@
     </div>
 
 </div>
+<script  src="{{ url_for('static', filename='js/feedback.js') }}"></script>
 {% endblock %}

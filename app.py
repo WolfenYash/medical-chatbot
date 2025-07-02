@@ -258,7 +258,14 @@ def history():
     if "user" not in session:
         flash("You must be logged in to access this page", "danger")
         return redirect(url_for("login"))
-
+    if request.method == "POST":
+        chat_id = request.form.get("chat_id")
+        feedback = request.form.get("feedback")
+        with engine.begin() as conn:
+            conn.execute(
+                text("UPDATE chat_history SET feedback = :feedback WHERE id = :chat_id AND username = :username"),
+                {"feedback": feedback, "chat_id": chat_id, "username": session["user"]}
+            )
     with engine.begin() as conn:
         chats = conn.execute(
             text("SELECT * FROM chat_history WHERE username = :username ORDER BY timestamp DESC"),
