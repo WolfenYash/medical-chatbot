@@ -22,6 +22,16 @@ app.secret_key = os.getenv("SECRET_KEY")
 
 engine = create_engine("sqlite:///example.db")
 
+from datetime import timedelta
+
+app.config["SESSION_PERMANENT"] = False
+app.config["SESSION_TYPE"] = "filesystem"
+app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(days=1)
+Session(app)
+
+
+
+import uuid # this is used to generate unique IDs for chat history
 
 @app.after_request
 def after_request(response):
@@ -100,6 +110,9 @@ def chatbot():
         flash("Please log in to access the chatbot.", "danger")
         return redirect(url_for("login"))
 
+    if "chat_session" not in session:
+        session["chat_session"] = str(uuid.uuid4())
+    
     with engine.begin() as conn:
         profile = conn.execute(
             text("SELECT * FROM profiles WHERE username = :username"),
@@ -126,7 +139,18 @@ def chatbot():
     Sleep per Night: {profile.sleep_hours} hours
     Family History: {profile.family_history}
     """
-
+    with engine.begin() as conn:
+        chat_flow = conn.execute(
+            text("SELECT user_message, bot_response FROM chat_history WHERE session_id = :sid"),
+            {"sid": session["chat_session"]}
+        ).fetchall()
+    
+    history_str = ""
+    if chat_flow:
+        for user_msg, bot_msg in chat_flow[-5:]:  # Only last 5 turns to keep prompt short
+            history_str += f"User: {user_msg}\nBot: {bot_msg}\n"
+    else:
+        history_str = "No previous chat history."
     if request.method == "POST":
         user_input = request.form.get("user_input")
         if not user_input:
@@ -152,23 +176,27 @@ def chatbot():
 
         # Step 2: Build a structured prompt using PromptTemplate
         rag_prompt = PromptTemplate(
-            input_variables=["profile", "context", "question"],
-            template=(
-                "You are a helpful and medically accurate assistant.\n"
-                "Use the following user profile and medical documents to answer the question.\n\n"
-                "User Profile:\n{profile}\n\n"
-                "Medical Context:\n{context}\n\n"
-                "Question: {question}\n\n"
-                "Answer:"
+        input_variables=["profile", "context", "history", "question"],
+        template=(
+            "You are a helpful and medically accurate assistant.\n\n"
+            "User Profile:\n{profile}\n\n"
+            "Relevant Medical Documents:\n{context}\n\n"
+            "Conversation So Far:\n{history}\n\n"
+            "Use the full conversation history to understand if the user is currently unwell or experiencing symptoms, and adapt your advice accordingly.\n\n"
+            "Current Question: {question}\n\n"
+            "Answer:"
             )
         )
+
 
         # Step 3: Format the final prompt
         final_prompt = rag_prompt.format(
             profile=profile_str,
             context=context,
+            history=history_str,
             question=user_input
         )
+
 
 
 
@@ -179,8 +207,8 @@ def chatbot():
         with engine.begin() as conn:
             # Save the user input to the chat history
             conn.execute(
-                text("INSERT INTO chat_history (username, user_message, bot_response) VALUES (:username, :message, :bot_response)"),
-                {"username": session["user"], "message": user_input, "bot_response": response}
+                text("INSERT INTO chat_history (username, user_message, bot_response , session_id) VALUES (:username, :message, :bot_response , :session_id)"),
+                {"username": session["user"], "message": user_input, "bot_response": response , "session_id": session["chat_session"]}
             )
         sources = []
         seen = set()
@@ -191,9 +219,22 @@ def chatbot():
             if label not in seen:
                 sources.append(label)
                 seen.add(label)
+        with engine.begin() as conn:
+            chat_flow = conn.execute(
+                text("SELECT user_message, bot_response FROM chat_history WHERE session_id = :sid"),
+                {"sid": session["chat_session"]}
+            ).fetchall()
 
-        return render_template("chat.html", response= response,sources = sources)
-    return render_template("chat.html", response=None)
+        return render_template("chat.html", response= response,sources = sources,chat_flow=chat_flow)
+    
+
+    with engine.begin() as conn:
+        chat_flow = conn.execute(
+            text("SELECT user_message, bot_response FROM chat_history WHERE session_id = :sid"),
+            {"sid": session["chat_session"]}
+            ).fetchall()
+
+    return render_template("chat.html", response=None, chat_flow=chat_flow)
 
 @app.route("/profile", methods=["GET", "POST"])
 def save_profile():
@@ -273,6 +314,16 @@ def history():
         ).fetchall()
 
     return render_template("history.html", chats=chats)
+
+
+@app.route("/end_session", methods=["POST"])
+def end_session():
+    session.pop("chat_session", None)  # Safely remove session_id
+    flash("Chat session ended. Start a new conversation!", "info")
+    return redirect(url_for("chatbot"))
+
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)

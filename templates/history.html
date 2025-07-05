@@ -4,8 +4,10 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/history.css') }}">
 {%endblock%}
 {% block main %}
+<h1 class="text-center">Chat History</h1>
 <div class="container mt-4 d-flex justify-content-center">
-    <h1 class="text-center">Chat History</h1>
+    
+    <br>
     <div class="list-group">
         <table class="table table-bordered table-hover mb-4 dist-10">
             <thead>
@@ -25,23 +27,16 @@
             </tbody>
         {% endif %}
         {% for chat in chats %}
+                {% if prev_session and chat[6] != prev_session %}
+                  <tr><td colspan="5"><hr class="my-3"></td></tr>
+                {% endif %}
+
                 <tbody>
                     <tr class="{% if chat[5] == 'bad' %}table-danger{% elif chat[5] == 'good' %}table-success{% endif %}">
                         <td>{{loop.index}}</td>
                         <td>{{ chat[2] }}</td>
                         <td>{{ chat[3] }}</td>
                         <td>{{ chat[4]}}</td>
-                        <!-- <td class="d-flex flex-column justify-content-center">    
-                            <form action="{{url_for('history')}}" method="post">
-                                <input type="hidden" name="chat_id" value="{{ chat[0] }}">
-                                <select name="feedback" class="form-select">
-                                    <option value="">Select Feedback</option>
-                                    <option value="good" {% if chat[5] == 'good' %}selected{% endif %}>Good</option>
-                                    <option value="bad" {% if chat[5] == 'bad' %}selected{% endif %}>Bad</option>
-                                </select>
-                                <button type="submit" class="btn btn-primary mt-2">Submit</button> 
-                            </form>
-                        </td> -->
                         <td class="feedback-cell">
                             {% if chat[5] %}
                               <form method="POST" class="static-feedback-form">
@@ -55,8 +50,8 @@
                                 <input type="hidden" name="chat_id" value="{{ chat[0] }}">
                                 <select name="feedback" class="form-select form-select-sm d-inline w-auto">
                                   <option value="">Select Feedback</option>
-                                  <option value="Good" {% if chat[5] == 'Good' %}selected{% endif %}>Good</option>
-                                  <option value="Bad" {% if chat[5] == 'Bad' %}selected{% endif %}>Bad</option>
+                                  <option value="good" {% if chat[5] == 'good' %}selected{% endif %}>Good</option>
+                                  <option value="bad" {% if chat[5] == 'bad' %}selected{% endif %}>Bad</option>
                                 </select>
                                 <button type="submit" class="btn btn-sm btn-primary">Save</button>
                               </form>
@@ -65,8 +60,8 @@
                                 <input type="hidden" name="chat_id" value="{{ chat[0] }}">
                                 <select name="feedback" class="form-select form-select-sm d-inline w-auto">
                                   <option value="">Select Feedback</option>
-                                  <option value="Good">Good</option>
-                                  <option value="Bad">Bad</option>
+                                  <option value="good">Good</option>
+                                  <option value="bad">Bad</option>
                                 </select>
                                 <button type="submit" class="btn btn-sm btn-primary">Submit</button>
                               </form>
@@ -74,6 +69,7 @@
                           </td>
                     </tr>
                 </tbody>
+                {% set prev_session = chat[6] %}
             {% endfor %}
         </table>
     </div>

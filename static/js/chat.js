@@ -19,3 +19,8 @@ toggle_sources.addEventListener("click",() =>
 
     }
 );
+let button = document.querySelector(".show-btn");
+button.addEventListener("click", function () {
+    let chat_flow = document.querySelector("#chat-flow");
+    chat_flow.classList.toggle("flow");
+});

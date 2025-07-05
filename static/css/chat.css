@@ -96,3 +96,21 @@ margin-top: 10px;
 border-left: 4px solid #6c757d;
 display:none;
 }
+
+
+#chat-flow {
+    display: none;
+  }
+#chat-flow.flow {
+    display: block !important;
+}
+
+.lower-nav
+{
+    display:flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #f8f9fa;
+    border-top: 1px solid #afb9c4;
+}

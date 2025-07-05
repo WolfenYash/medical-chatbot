@@ -20,6 +20,34 @@
     </div>
   {% endif %}
 {% endwith %}
+<div class="lower-nav">
+  <button class="show-btn btn btn-primary mb-3">Show Conversation</button>
+
+  <form action="{{ url_for('end_session') }}" method="POST" style="display:inline;">
+    <button type="submit" class="btn btn-warning">🗑️ End Session</button>
+  </form>
+</div>
+
+<div class="chat-history mt-4" id="chat-flow">
+  {% if chat_flow %}
+      <!-- nothing -->
+  {% else %}
+      <h5>No conversation history available.</h5>
+  {% endif %}
+  
+  {% if not chat_flow %}
+  <!-- nothing -->
+  {% endif %}
+  {% if chat_flow %}
+      <h5>Conversation</h5>
+      <ul class="list-group">
+          {% for human, bot in chat_flow %}
+              <li class="list-group-item"><strong>You:</strong> {{ human }}</li>
+              <li class="list-group-item"><strong>AI:</strong> {{ bot }}</li>
+          {% endfor %}
+      </ul>
+  {% endif %}
+</div>
 
 <div class="chat-container">
     <form action="{{ url_for('chatbot') }}" method="POST" autocomplete = "off">
