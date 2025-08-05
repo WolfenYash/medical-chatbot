@@ -23,7 +23,7 @@ app.secret_key = os.getenv("SECRET_KEY")
 engine = create_engine("sqlite:///example.db")
 
 from datetime import timedelta
-
+# WANT TO KNOW WHAT it does exactly currently i know it is used to set the session lifetime
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(days=1)
@@ -169,8 +169,11 @@ def chatbot():
         #     return render_template("chat.html", response="Sorry, I can only answer healthcare-related questions.")
 
         # Step 1: Retrieve documents from Chroma
+        
         embedding = OpenAIEmbeddings()
+
         db = Chroma(persist_directory="chroma_db", embedding_function=embedding)
+
         docs = db.similarity_search(user_input, k=3)
         context = "\n\n".join([doc.page_content for doc in docs])
 
@@ -207,7 +210,8 @@ def chatbot():
         with engine.begin() as conn:
             # Save the user input to the chat history
             conn.execute(
-                text("INSERT INTO chat_history (username, user_message, bot_response , session_id) VALUES (:username, :message, :bot_response , :session_id)"),
+                text("INSERT INTO chat_history (username, user_message, bot_response , session_id) VALUES (:username, :message, :bot_response , " \
+                ":session_id)"),
                 {"username": session["user"], "message": user_input, "bot_response": response , "session_id": session["chat_session"]}
             )
         sources = []
@@ -322,10 +326,5 @@ def end_session():
     flash("Chat session ended. Start a new conversation!", "info")
     return redirect(url_for("chatbot"))
 
-
-
-
 if __name__ == "__main__":
     app.run(debug=True)
-
-# host = "127.0.0.1", port = 5001,
